@@ -7,6 +7,16 @@ import os
 # Stockage des comptes
 accounts = []
 
+def toggle_password_visibility(entry, button):
+    if entry.cget('show') == '':
+        entry.config(show='*')
+        button.config(text="Afficher")  # Texte du bouton
+    else:
+        entry.config(show='')
+        button.config(text="Cacher")  # Texte du bouton
+
+
+
 # Charger les comptes depuis le fichier texte
 def load_accounts():
     if os.path.exists("accounts.txt"):
@@ -60,6 +70,7 @@ def delete_account(index):
 # Modifier un compte
 def edit_account(index):
     account = accounts[index]
+    
 
     def save_changes():
         new_category = edit_category_var.get()
@@ -105,9 +116,22 @@ def edit_account(index):
     edit_email_entry.insert(0, account["email"])
     edit_email_entry.pack(pady=5)
 
-    edit_password_entry = tk.Entry(edit_window, width=35, bg="#2a2a40", fg="white", relief="flat")
+    
+    # Conteneur pour aligner le champ mot de passe et le bouton "Afficher/Cacher"
+    password_frame = tk.Frame(edit_window, bg="#1e1e2f")
+    password_frame.pack(padx=5)
+
+    # Champ mot de passe
+    edit_password_entry = tk.Entry(password_frame, width=30, bg="#2a2a40", fg="white", relief="flat", show='*')  # Par défaut masqué
     edit_password_entry.insert(0, account["password"])
-    edit_password_entry.pack(pady=5)
+    edit_password_entry.grid(row=0, column=0, padx=5)
+
+    # Bouton "Afficher/Cacher" aligné avec le champ mot de passe
+    edit_password_toggle_btn = tk.Button(password_frame, text="Afficher", bg="#2a2a40", fg="white", relief="flat", 
+                                     command=lambda: toggle_password_visibility(edit_password_entry, edit_password_toggle_btn))
+    edit_password_toggle_btn.grid(row=0, column=1, padx=5)
+
+
 
     tk.Button(edit_window, text="Sauvegarder", bg="#2a2a40", fg="white", command=save_changes).pack(pady=10)
 
